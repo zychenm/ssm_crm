@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper节点是映射sql语句文件的根节点
+    属性namespace 命名空间 唯一标识  用于查找sql的映射文件
+  代理模式 将namespace改成接口的全路径
+ -->
+<mapper namespace="cn.itcast.dao.BaseDictMapper">
+     <!-- 通过code查询字典 -->
+     <select id="findBaseDictByTypeCode" parameterType="string" resultType="BaseDict">
+     	SELECT dict_id dictId,
+     	       dict_type_code dictTypeCode,
+     	       dict_type_name dictTypeName,
+     	       dict_item_name dictItemName 
+     	       FROM base_dict
+     	       WHERE dict_type_code = #{typeCode}
+     </select>
+     
+</mapper> 

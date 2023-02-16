@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper节点是映射sql语句文件的根节点
+    属性namespace 命名空间 唯一标识  用于查找sql的映射文件
+  代理模式 将namespace改成接口的全路径
+ -->
+<mapper namespace="cn.itcast.dao.CustomerMapper">
+    <!-- 
+                   通过条件分页查询所有的客户
+     -->
+     <select id="findCustomerByVo" parameterType="queryVo" resultType="customer">
+        	SELECT cust_id custId,
+       cust_name custName,
+       a.dict_item_name custSource,
+       b. dict_item_name custLevel,
+       c. dict_item_name custIndustry,
+       cust_linkman  custLinkMan,
+       cust_phone custPhone
+        FROM customer,base_dict a,
+              base_dict b,
+              base_dict c
+        <where>
+             cust_source=a.dict_id 
+             AND cust_level = b.dict_id 
+             AND cust_industry = c.dict_id
+			 <if test="custName!=null and custName!=''">
+			 	and cust_name like "%"#{custName}"%"
+			 </if> 
+			 <if test="custSource!=null and custSource!=''">
+			 	and cust_source=#{custSource}
+			 </if>  
+			 <if test="custLevel!=null and custLevel!=''">
+			 	and cust_level =#{custLevel}
+			 </if>  
+			 <if test="custIndustry!=null and custIndustry!=''">
+			 	and cust_industry =#{custIndustry}
+			 </if>         	
+        </where> 
+        limit #{startIndex}, #{pageSize}
+     </select>
+     <!--使用查询条件统计总条数 -->
+     <select id="countTotalCustomerByVo" parameterType="queryVo" resultType="int">
+     		SELECT count(1)
+             FROM customer,base_dict a,
+              base_dict b,
+              base_dict c
+        <where>
+             cust_source=a.dict_id 
+             AND cust_level = b.dict_id 
+             AND cust_industry = c.dict_id
+			 <if test="custName!=null and custName!=''">
+			 	and cust_name like "%"#{custName}"%"
+			 </if> 
+			 <if test="custSource!=null and custSource!=''">
+			 	and cust_source=#{custSource}
+			 </if>  
+			 <if test="custLevel!=null and custLevel!=''">
+			 	and cust_level =#{custLevel}
+			 </if>  
+			 <if test="custIndustry!=null and custIndustry!=''">
+			 	and cust_industry =#{custIndustry}
+			 </if>         	
+        </where> 
+     </select>
+     
+     <select id="findCustomerById" parameterType="int" resultType="customer">
+     		SELECT cust_id custId,
+               cust_name custName,
+               cust_source custSource,
+               cust_level custLevel,
+               cust_industry custIndustry,
+               cust_linkman  custLinkMan,
+               cust_phone custPhone
+               FROM customer
+               where cust_id = #{custId}
+     </select>
+     <!-- 修改客户的数据 -->
+     <update id="editCustomer" parameterType="customer" >
+     		update customer 
+     			<set>
+     				<if test="custName!=null and custName!=''">
+					 	 cust_name  = #{custName},
+					 </if> 
+					 <if test="custSource!=null and custSource!=''">
+					 	 cust_source=#{custSource},
+					 </if>  
+					 <if test="custLevel!=null and custLevel!=''">
+					 	 cust_level =#{custLevel},
+					 </if>  
+					 <if test="custIndustry!=null and custIndustry!=''">
+					 	 cust_industry =#{custIndustry},
+					 </if>         	
+     			</set>
+               where cust_id = #{custId}
+     </update>
+     <!-- 删除客户 -->
+     <delete id="deleteCustomer" parameterType="customer">
+     	delete from customer where cust_id=#{custId}
+     </delete>
+</mapper> 
